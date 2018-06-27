@@ -19,9 +19,12 @@ func printVersion() {
 
 func main() {
 	printVersion()
-	namespace := os.Getenv("WATCH_NAMESPACE")
+	namespace, err := k8sutil.GetWatchNamespace()
+	if err != nil {
+		logrus.Fatalf("Failed to get watch namespace: %v", err)
+	}
 	logrus.Infof("watching namespace: %v", namespace)
-	sdk.Watch("vault.banzaicloud.com/v1alpha1", "Vault", namespace, 5)
+	sdk.Watch("vault.banzaicloud.com/v1alpha1", "Vault", namespace, 60)
 	sdk.Handle(stub.NewHandler())
 	sdk.Run(context.TODO())
 }
