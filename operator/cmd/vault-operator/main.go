@@ -19,7 +19,9 @@ func printVersion() {
 
 func main() {
 	printVersion()
-	sdk.Watch("vault.banzaicloud.com/v1alpha1", "Vault", "default", 5)
+	namespace := os.Getenv("WATCH_NAMESPACE")
+	logrus.Infof("watching namespace: %v", namespace)
+	sdk.Watch("vault.banzaicloud.com/v1alpha1", "Vault", namespace, 5)
 	sdk.Handle(stub.NewHandler())
 	sdk.Run(context.TODO())
 }
